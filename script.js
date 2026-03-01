@@ -10,6 +10,10 @@ document.getElementById("markBtn").addEventListener("click", () => {
 
 function addCard() {
     const grid = Array.from({ length: 5 }, () => Array(5).fill(null));
+    
+    // Set the middle cell (free space) as 0
+    grid[2][2] = 0;
+
     const card = {
         id: nextCardId++,
         grid,
@@ -25,6 +29,13 @@ function renderCard(card) {
     cardDiv.className = "card";
     cardDiv.dataset.id = card.id;
 
+    // Delete button
+    const delBtn = document.createElement("button");
+    delBtn.innerText = "-";
+    delBtn.className = "deleteBtn";
+    delBtn.addEventListener("click", () => deleteCard(card.id));
+    cardDiv.appendChild(delBtn);
+
     card.grid.forEach((row, r) => {
         row.forEach((cell, c) => {
             const input = document.createElement("input");
@@ -32,11 +43,24 @@ function renderCard(card) {
             input.className = "cell";
             input.dataset.row = r;
             input.dataset.col = c;
+
+            if (r === 2 && c === 2) { // middle cell pre-marked
+                input.value = "X";
+                input.classList.add("marked");
+            }
+
             cardDiv.appendChild(input);
         });
     });
 
     container.appendChild(cardDiv);
+}
+
+function deleteCard(cardId) {
+    cards = cards.filter(c => c.id !== cardId);
+    const cardDiv = document.querySelector(`.card[data-id='${cardId}']`);
+    if (cardDiv) cardDiv.remove();
+    updateMessages();
 }
 
 function markNumber(drawnNumber) {
@@ -51,7 +75,12 @@ function markNumber(drawnNumber) {
             const r = parseInt(input.dataset.row);
             const c = parseInt(input.dataset.col);
             const val = parseInt(input.value);
-            if (val === drawnNumber) {
+
+            if (r === 2 && c === 2) {
+                card.grid[r][c] = 0; // middle cell always 0
+                input.value = "X";
+                input.classList.add("marked");
+            } else if (val === drawnNumber) {
                 card.grid[r][c] = 0;
                 input.value = "X";
                 input.classList.add("marked");
@@ -118,4 +147,9 @@ function checkWins(card) {
     }
 
     return msgs;
+}
+
+function updateMessages() {
+    // Optional: clear messages when a card is deleted
+    document.getElementById("messages").innerHTML = "";
 }

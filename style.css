@@ -37,34 +37,11 @@ body {
     color: white;
 }
 
-.cell.highlight {
-    background-color: #ffeb3b;
-    color: #000;
-}
-
-.cell.lastMarked {
-    border: 2px solid #f44336;
-}
-
 .deleteBtn {
     position: absolute;
     top: -10px;
     right: -10px;
     background-color: #e91e63;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.clearBtn {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    background-color: #2196f3;
     color: white;
     border: none;
     border-radius: 50%;

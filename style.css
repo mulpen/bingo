@@ -4,6 +4,10 @@ body {
     text-align: center;
 }
 
+#addCardBtn {
+  margin-bottom: 20px;
+}
+
 #cardsContainer {
     display: flex;
     flex-wrap: wrap;

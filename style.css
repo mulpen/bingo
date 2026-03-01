@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+#cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: repeat(5, 60px);
+    grid-template-rows: repeat(5, 60px);
+    gap: 5px;
+    border: 2px solid #333;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.cell.marked {
+    background-color: #4caf50;
+    color: white;
+}
+
+#messages {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #e91e63;
+}
+
+@media(max-width: 600px) {
+    .card {
+        grid-template-columns: repeat(5, 40px);
+        grid-template-rows: repeat(5, 40px);
+    }
+    .cell {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+}

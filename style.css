@@ -8,6 +8,10 @@ body {
   margin-bottom: 10px;
 }
 
+#markBtn {
+  margin-top: 10px;
+}
+
 #cardsContainer {
     display: flex;
     flex-wrap: wrap;

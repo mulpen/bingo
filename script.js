@@ -1,14 +1,19 @@
 let cards = [];
 let nextCardId = 1;
 
-document.getElementById("addCardBtn").addEventListener("click", () => addCard());
-document.getElementById("markBtn").addEventListener("click", () => {
-    const num = parseInt(document.getElementById("drawInput").value);
-    if (!isNaN(num)) markNumber(num);
-    document.getElementById("drawInput").value = "";
+const drawInput = document.getElementById("drawInput");
+const markBtn = document.getElementById("markBtn");
+const cardsContainer = document.getElementById("cardsContainer");
+
+// Button click
+markBtn.addEventListener("click", () => markNumberFromInput());
+
+// Enter key
+drawInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") markNumberFromInput();
 });
 
-// Load saved cards from localStorage
+// Load cards from localStorage
 window.onload = () => {
     const saved = localStorage.getItem("bingoCards");
     if (saved) {
@@ -27,10 +32,21 @@ window.onload = () => {
     }
 };
 
+// --- Helpers ---
+function markNumberFromInput() {
+    const num = parseInt(drawInput.value);
+    if (!isNaN(num)) {
+        markNumber(num);
+    }
+    drawInput.value = "";
+    drawInput.focus();
+}
+
 function saveCards() {
     localStorage.setItem("bingoCards", JSON.stringify(cards));
 }
 
+// --- Card Functions ---
 function addCard() {
     const grid = Array.from({ length: 5 }, () => Array(5).fill(null));
     grid[2][2] = 0; // free space
@@ -46,7 +62,6 @@ function addCard() {
 }
 
 function renderCard(card) {
-    const container = document.getElementById("cardsContainer");
     const cardDiv = document.createElement("div");
     cardDiv.className = "card";
     cardDiv.dataset.id = card.id;
@@ -87,7 +102,7 @@ function renderCard(card) {
         });
     });
 
-    container.appendChild(cardDiv);
+    cardsContainer.appendChild(cardDiv);
     updateCardUI(card);
 }
 
@@ -106,19 +121,16 @@ function clearMarks(cardId) {
     card.wins = { horizontal: false, vertical: false, diagonalMain: false, diagonalAnti: false };
     for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
-            if (!(r === 2 && c === 2)) {
-                card.grid[r][c] = card.grid[r][c] !== null ? card.grid[r][c] : null;
-            } else {
-                card.grid[r][c] = 0; // middle free space
-            }
+            if (!(r === 2 && c === 2)) card.grid[r][c] = card.grid[r][c] !== null ? card.grid[r][c] : null;
+            else card.grid[r][c] = 0; // free space
         }
     }
-
     updateCardUI(card);
     saveCards();
     updateMessages();
 }
 
+// --- Mark number and wins ---
 function markNumber(drawnNumber) {
     const messages = [];
 
@@ -126,32 +138,33 @@ function markNumber(drawnNumber) {
         const cardDiv = document.querySelector(`.card[data-id='${card.id}']`);
         const inputs = cardDiv.querySelectorAll(".cell");
 
+        // Clear previous lastMarked
+        inputs.forEach(input => input.classList.remove("lastMarked"));
+
         inputs.forEach(input => {
             const r = parseInt(input.dataset.row);
             const c = parseInt(input.dataset.col);
             const val = parseInt(input.value);
 
             if (r === 2 && c === 2) {
-                card.grid[r][c] = 0; // free space always marked
+                card.grid[r][c] = 0;
                 input.value = "X";
                 input.classList.add("marked");
             } else if (val === drawnNumber) {
                 card.grid[r][c] = 0;
                 input.value = "X";
-                input.classList.add("marked");
+                input.classList.add("marked", "lastMarked"); // highlight last marked
             } else if (!isNaN(val)) {
                 card.grid[r][c] = val;
             } else {
                 card.grid[r][c] = null;
             }
-            input.classList.remove("highlight"); // clear previous highlights
+            input.classList.remove("highlight");
         });
 
-        // Check for wins
         const winMsgs = checkWins(card);
         winMsgs.forEach(msg => messages.push(`Card ${card.id}: ${msg}`));
 
-        // Highlight winning lines
         highlightWins(card);
     });
 
@@ -159,6 +172,7 @@ function markNumber(drawnNumber) {
     saveCards();
 }
 
+// --- Wins logic ---
 function checkWins(card) {
     const msgs = [];
 
@@ -174,9 +188,7 @@ function checkWins(card) {
     for (let c = 0; c < 5; c++) {
         if (!card.wins.vertical) {
             let colWin = true;
-            for (let r = 0; r < 5; r++) {
-                if (card.grid[r][c] !== 0) colWin = false;
-            }
+            for (let r = 0; r < 5; r++) if (card.grid[r][c] !== 0) colWin = false;
             if (colWin) {
                 card.wins.vertical = true;
                 msgs.push("Vertical win!");
@@ -187,9 +199,7 @@ function checkWins(card) {
     // Main diagonal
     if (!card.wins.diagonalMain) {
         let diagWin = true;
-        for (let i = 0; i < 5; i++) {
-            if (card.grid[i][i] !== 0) diagWin = false;
-        }
+        for (let i = 0; i < 5; i++) if (card.grid[i][i] !== 0) diagWin = false;
         if (diagWin) {
             card.wins.diagonalMain = true;
             msgs.push("Main diagonal win!");
@@ -199,9 +209,7 @@ function checkWins(card) {
     // Anti-diagonal
     if (!card.wins.diagonalAnti) {
         let antiWin = true;
-        for (let i = 0; i < 5; i++) {
-            if (card.grid[i][4 - i] !== 0) antiWin = false;
-        }
+        for (let i = 0; i < 5; i++) if (card.grid[i][4 - i] !== 0) antiWin = false;
         if (antiWin) {
             card.wins.diagonalAnti = true;
             msgs.push("Anti-diagonal win!");
@@ -211,6 +219,7 @@ function checkWins(card) {
     return msgs;
 }
 
+// --- Highlight wins ---
 function highlightWins(card) {
     const cardDiv = document.querySelector(`.card[data-id='${card.id}']`);
     const inputs = cardDiv.querySelectorAll(".cell");
@@ -221,9 +230,7 @@ function highlightWins(card) {
     // Horizontal
     for (let r = 0; r < 5; r++) {
         if (card.grid[r].every(cell => cell === 0)) {
-            for (let c = 0; c < 5; c++) {
-                inputs[r * 5 + c].classList.add("highlight");
-            }
+            for (let c = 0; c < 5; c++) inputs[r * 5 + c].classList.add("highlight");
         }
     }
 
@@ -231,9 +238,7 @@ function highlightWins(card) {
     for (let c = 0; c < 5; c++) {
         let colWin = true;
         for (let r = 0; r < 5; r++) if (card.grid[r][c] !== 0) colWin = false;
-        if (colWin) {
-            for (let r = 0; r < 5; r++) inputs[r * 5 + c].classList.add("highlight");
-        }
+        if (colWin) for (let r = 0; r < 5; r++) inputs[r * 5 + c].classList.add("highlight");
     }
 
     // Main diagonal
@@ -247,10 +252,12 @@ function highlightWins(card) {
     if (antiWin) for (let i = 0; i < 5; i++) inputs[i * 5 + (4 - i)].classList.add("highlight");
 }
 
+// --- Update card UI ---
 function updateCardUI(card) {
     const cardDiv = document.querySelector(`.card[data-id='${card.id}']`);
     if (!cardDiv) return;
     const inputs = cardDiv.querySelectorAll(".cell");
+
     for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
             const input = inputs[r * 5 + c];
@@ -265,6 +272,7 @@ function updateCardUI(card) {
                 input.classList.remove("marked");
             }
             input.classList.remove("highlight");
+            input.classList.remove("lastMarked");
         }
     }
 }

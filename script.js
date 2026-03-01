@@ -8,6 +8,27 @@ document.getElementById("markBtn").addEventListener("click", () => {
     document.getElementById("drawInput").value = "";
 });
 
+const drawInput = document.getElementById("drawInput");
+const markBtn = document.getElementById("markBtn");
+
+// Existing button click
+markBtn.addEventListener("click", () => {
+    const num = parseInt(drawInput.value);
+    if (!isNaN(num)) markNumber(num);
+    drawInput.value = "";
+    drawInput.focus(); // keep focus after marking
+});
+
+// --- NEW: Enter key support ---
+drawInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        const num = parseInt(drawInput.value);
+        if (!isNaN(num)) markNumber(num);
+        drawInput.value = "";
+        drawInput.focus(); // keep focus after marking
+    }
+});
+
 function addCard() {
     const grid = Array.from({ length: 5 }, () => Array(5).fill(null));
     

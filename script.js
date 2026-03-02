@@ -107,7 +107,7 @@ function markNumber(drawnNumber) {
 
         // Check for wins
         const winMsgs = checkWins(card);
-        winMsgs.forEach(msg => messages.push(`Card ${card.id}: ${msg}`));
+        winMsgs.forEach(msg => messages.push(`Cartela ${card.id}: ${msg}`));
     });
 
     document.getElementById("messages").innerHTML = messages.join("<br>") || "";

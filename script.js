@@ -2,11 +2,6 @@ let cards = [];
 let nextCardId = 1;
 
 document.getElementById("addCardBtn").addEventListener("click", addCard);
-document.getElementById("markBtn").addEventListener("click", () => {
-    const num = parseInt(document.getElementById("drawInput").value);
-    if (!isNaN(num)) markNumber(num);
-    document.getElementById("drawInput").value = "";
-});
 
 const drawInput = document.getElementById("drawInput");
 const markBtn = document.getElementById("markBtn");

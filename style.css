@@ -42,7 +42,7 @@ body {
 
 .cell.marked {
     background-color: #4caf50;
-    color: white;
+    color: #4caf50;
 }
 
 .deleteBtn {

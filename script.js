@@ -120,7 +120,7 @@ function checkWins(card) {
     for (let r = 0; r < 5; r++) {
         if (!card.wins.horizontal && card.grid[r].every(cell => cell === 0)) {
             card.wins.horizontal = true;
-            msgs.push("Horizontal win!");
+            msgs.push("Bingo na Horizontal!");
         }
     }
 
@@ -133,7 +133,7 @@ function checkWins(card) {
             }
             if (colWin) {
                 card.wins.vertical = true;
-                msgs.push("Vertical win!");
+                msgs.push("Bingo na Vertical!");
             }
         }
     }
@@ -146,7 +146,7 @@ function checkWins(card) {
         }
         if (diagWin) {
             card.wins.diagonalMain = true;
-            msgs.push("Main diagonal win!");
+            msgs.push("Bingo na diagonal B!");
         }
     }
 
@@ -158,7 +158,7 @@ function checkWins(card) {
         }
         if (antiWin) {
             card.wins.diagonalAnti = true;
-            msgs.push("Anti-diagonal win!");
+            msgs.push("Bingo na diagonal O!");
         }
     }
 

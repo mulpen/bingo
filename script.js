@@ -165,7 +165,9 @@ function checkWins(card) {
     return msgs;
 }
 
+/*
 function updateMessages() {
     // Optional: clear messages when a card is deleted
     document.getElementById("messages").innerHTML = "";
 }
+*/

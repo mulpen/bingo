@@ -101,7 +101,7 @@ function markNumber(drawnNumber) {
                 input.value = 0;
                 input.classList.add("marked");
             } else {
-                card.grid[r][c] = val || null;
+                card.grid[r][c] = isNaN(val) ? null : val;
             }
         });
 

@@ -61,7 +61,7 @@ function renderCard(card) {
             input.dataset.col = c;
 
             if (r === 2 && c === 2) { // middle cell pre-marked
-                input.value = "X";
+                input.value = 0;
                 input.classList.add("marked");
             }
 
@@ -94,11 +94,11 @@ function markNumber(drawnNumber) {
 
             if (r === 2 && c === 2) {
                 card.grid[r][c] = 0; // middle cell always 0
-                input.value = "X";
+                input.value = 0;
                 input.classList.add("marked");
             } else if (val === drawnNumber) {
                 card.grid[r][c] = 0;
-                input.value = "X";
+                input.value = 0;
                 input.classList.add("marked");
             } else {
                 card.grid[r][c] = val || null;
